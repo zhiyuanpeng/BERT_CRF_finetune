@@ -18,7 +18,7 @@ class CallNoteNER(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, sentences, sentence_lengths, sentence_words, sentence_words_lengths,
-                sentence_words_indices, masks, train=True):
+                sentence_words_indices, masks, sentences_list, train=True):
         """
         :param sentences:
                     [sentence1, sentence2, ...]

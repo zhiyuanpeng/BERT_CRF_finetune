@@ -141,7 +141,8 @@ def gen_sentence_tensors(sentence_list, device, data_url, bert_model):
     sentences = pad_sequence(sentences, batch_first=True).to(device)
     masks = pad_sequence(masks, batch_first=True).to(device)
     # (batch_size, max_sent_len)
-    return sentences, sentence_lengths, sentence_words, sentence_words_lengths, sentence_words_indices, masks
+    # return the sentences_list for write the pred result to the file
+    return sentences, sentence_lengths, sentence_words, sentence_words_lengths, sentence_words_indices, masks, sentence_list
 
 
 def load_raw_data(data_url, update=False):

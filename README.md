@@ -12,3 +12,4 @@ new version BERT_CRF_finetune
 add mask to mask padding
 remove the zero_grad to fine tune the bert
 train on CoNLL2003
+modify eval.py to output sentence, true label, predict label

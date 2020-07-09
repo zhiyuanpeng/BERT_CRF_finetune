@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from dataset import NERDataset
 from utils.path_util import from_project_root
 from utils.torch_util import f1_score
+import transformers as ppb
 from sklearn import metrics
 
 
@@ -32,7 +33,9 @@ def evaluate(model, data_url, label_list):
             except RuntimeError:
                 print("all 0 tags, no evaluating this epoch")
                 continue
+            sentences_str = data[6]
             sentence_lengths = data[1]
+            write_predict_result(sentences_str, sentence_lengths, sentence_labels, pred_sentence_labels, label_list)
             for length, true_labels, pred_labels in zip(sentence_lengths, sentence_labels, pred_sentence_labels):
                 for i in range(length):
                     true_labels_numpy = true_labels.cpu().numpy()
@@ -45,9 +48,20 @@ def evaluate(model, data_url, label_list):
     return f1
 
 
+def write_predict_result(sentences_str, sentence_lengths, sentence_labels, pred_sentence_labels, label_list):
+    for sentence, length, real, pred in zip(sentences_str, sentence_lengths, sentence_labels.cpu().numpy(), pred_sentence_labels):
+        real_list = list(real)[:length]
+        pred_list = pred[:length]
+        with open("./data/CoNLL2003/final_result.txt", "a+") as f:
+            for i in range(length):
+                result = sentence[i] + "\t" + label_list[real_list[i]] + "\t" + label_list[pred_list[i]] + "\n"
+                f.write(result)
+            f.write("\n")
+
+
 def main():
     label_list = ["O", "B-ORG", "I-ORG", "B-PER", "I-PER", "B-LOC", "I-LOC", "B-MISC", "I-MISC"]
-    model_url = from_project_root("data/model/lr0.001000_stop10_epoch67_0.944072.pt")
+    model_url = from_project_root("data/model/CoNLL_lr0.000020_stop5_epoch35_0.942166.pt")
     test_url = from_project_root("data/CoNLL2003/conll2003_test.bio")
     model = torch.load(model_url)
     evaluate(model, test_url, label_list)
