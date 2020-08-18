@@ -41,7 +41,7 @@ def evaluate(model, data_url, label_list):
                     true_labels_numpy = true_labels.cpu().numpy()
                     sentence_true_list.append(true_labels_numpy[i])
                     sentence_pred_list.append(pred_labels[i])
-        precision, recall, f1 = f1_score(np.array(sentence_true_list), np.array(sentence_pred_list), max_id=len(label_list), id_filter=0)
+        precision, recall, f1 = f1_score(np.array(sentence_true_list), np.array(sentence_pred_list), max_id=len(label_list)-2, id_filter=1)
         # f1 = metrics.f1_score(sentence_true_list, sentence_pred_list, average="weighted")
         print("Precision is %.4f, Recall is %.4f, F1 is %.4f" % (precision, recall, f1))
         # print("Precision is %.4f, Recall is %.4f, F1 is %.4f" % (0, 0, f1))

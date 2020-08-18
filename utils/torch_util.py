@@ -57,7 +57,7 @@ def f1_score(y_true, y_pred, max_id, id_filter=0):
     t_recall = 0
     t_f1 = 0
     for i in range(id_filter, max_id):
-        precision, recall, f1, support_num = binary_f1_score(y_true == i, y_pred == i)
+        precision, recall, f1, support_num = binary_f1_score(y_true == i, y_pred == i, i)
         t_precision += precision
         t_recall += recall
         t_f1 += f1
@@ -65,13 +65,15 @@ def f1_score(y_true, y_pred, max_id, id_filter=0):
     return t_precision/total_num, t_recall/total_num, t_f1/total_num
 
 
-def binary_f1_score(y_true, y_pred):
+def binary_f1_score(y_true, y_pred, i):
+    LABEL_LIST = ["O", "B-ORG", "I-ORG", "B-PER", "I-PER", "B-LOC", "I-LOC", "B-MISC", "I-MISC"]
     num_proposed = y_pred.sum()
     num_correct = np.logical_and(y_true, y_pred).sum()
     num_gold = y_true.sum()
     precision = 0 if num_proposed == 0 else num_correct / num_proposed
     recall = 0 if num_gold == 0 else num_correct / num_gold
     f1 = 0 if (precision + recall) == 0 else 2 * precision * recall / (precision + recall)
+    print("support num for label %s is %d" % (LABEL_LIST[i], num_gold))
     return precision*num_gold, recall*num_gold, f1*num_gold, num_gold
 
 
