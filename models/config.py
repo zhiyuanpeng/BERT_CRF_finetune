@@ -148,9 +148,23 @@ class Config:
         if label_list is None:
             label_list = label_list_default
 
-        # print arguments
-        arguments = json.dumps(vars(), indent=2)
-        print("arguments", arguments)
+        self.dataset_name = dataset_name
+        self.device = device
+        self.save_only_best = save_only_best
+        self.n_epochs = n_epochs
+        self.bert_model_name = bert_model_name
+        self.early_stop = early_stop
+        self.learning_rate = learning_rate
+        self.batch_size = batch_size
+        self.clip_norm = clip_norm
+        self.n_tags = n_tags
+        self.log_per_batch = log_per_batch
+        self.train_url = train_url
+        self.dev_url = dev_url
+        self.test_url = test_url
+        self.c2v = c2v
+        self.w2v = w2v
+        self.label_list = label_list
 
         self.logger = get_logger("../log.txt")
         self.logger.info("This is the begin of the experiment")
