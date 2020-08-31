@@ -3,6 +3,7 @@ from datetime import datetime
 from utils.path_util import from_project_root
 from utils.torch_util import get_logger
 
+log_path = "/home/zpeng/Documents/Projects/NER/NERQ/BERT_CRF_finetune/log.txt"
 early_stop_default = 5
 learning_rate_default = 2e-5
 batch_size_default = 32
@@ -12,7 +13,7 @@ log_per_batch_default = 10
 n_epochs_default = 3000
 # this can also be replaced with path of bert model
 bert_model_name_default = "bert-base-uncased"
-device_default = "CUDA"
+device_default = "cuda"
 save_only_best_default = True
 dataset_name_default = "CoNLL2003"
 
@@ -166,18 +167,18 @@ class Config:
         self.w2v = w2v
         self.label_list = label_list
 
-        self.logger = get_logger("../log.txt")
+        self.logger = get_logger(log_path)
         self.logger.info("This is the begin of the experiment")
         self.logger.info("dataset_name is: %s", dataset_name)
         self.logger.info("device is: %s", device)
         self.logger.info("save_only_best is: %s", str(save_only_best))
         self.logger.info("n_epochs is: %d", n_epochs)
-        self.logger.info("bert_model_name is: %d", bert_model_name)
+        self.logger.info("bert_model_name is: %s", bert_model_name)
         self.logger.info("early_stop is: %d", early_stop)
         self.logger.info("learning_rate is: %f", learning_rate)
         self.logger.info("batch_size is: %d", batch_size)
         self.logger.info("clip_norm is: %d", clip_norm)
-        self.logger.info("n_tags is: %f", n_tags)
+        self.logger.info("n_tags is: %d", n_tags)
         self.logger.info("log_per_batch is: %d", log_per_batch)
         self.logger.info("train_url is: %s", train_url)
         self.logger.info("dev_url is: %s", dev_url)
@@ -185,4 +186,3 @@ class Config:
         self.logger.info("c2v is: %s", c2v)
         self.logger.info("w2v is: %s", w2v)
         self.logger.info("label list is: %s", " ".join(label_list))
-        self.logger.info("This is the end of the experiment")

@@ -9,7 +9,7 @@ import transformers as ppb
 # from sklearn import metrics
 
 
-def evaluate(model, data_url, label_list, bert_model_name, dataset_name, log_or_not):
+def evaluate(model, data_url, label_list, bert_model_name, dataset_name, logger, log_or_not):
     """
     evaluating end2end model on data_url
     Args:
@@ -18,6 +18,7 @@ def evaluate(model, data_url, label_list, bert_model_name, dataset_name, log_or_
         label_list: the label list of the dataset
         bert_model_name: name or path of bert model
         dataset_name: name of the dataset
+        logger: the logging instance
         log_or_not: true, log the result
     Returns:
         ret: dict of precision, recall, and f1
@@ -47,8 +48,9 @@ def evaluate(model, data_url, label_list, bert_model_name, dataset_name, log_or_
                     sentence_true_list.append(true_labels_numpy[i])
                     sentence_pred_list.append(pred_labels[i])
         precision, recall, f1 = f1_score(np.array(sentence_true_list), np.array(sentence_pred_list), label_list,
-                                         log_or_not, id_filter=0, max_id=len(label_list))
+                                         log_or_not, logger, id_filter=0, max_id=len(label_list))
         print("Precision is %.4f, Recall is %.4f, F1 is %.4f" % (precision, recall, f1))
+        logger.info("For the whole dataset, Precision is %.4f, Recall is %.4f, F1 is %.4f" % (precision, recall, f1))
     return f1
 
 

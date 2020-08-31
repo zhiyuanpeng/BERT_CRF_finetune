@@ -63,7 +63,7 @@ def calc_f1(tp, fp, fn, print_result=True):
     return precision, recall, f1
 
 
-def f1_score(y_true, y_pred, label_list, log_or_not, id_filter, max_id):
+def f1_score(y_true, y_pred, label_list, log_or_not, logger, id_filter, max_id):
     """
     calculate the f1 score for each label and the total
     Args:
@@ -71,6 +71,7 @@ def f1_score(y_true, y_pred, label_list, log_or_not, id_filter, max_id):
         y_pred:
         max_id: only calculate from labels with index id_filter to label with index max_id
         label_list: a list of all the label, used to find the name of the label
+        logger: logging instance
         id_filter:
         log_or_not:
 
@@ -83,7 +84,7 @@ def f1_score(y_true, y_pred, label_list, log_or_not, id_filter, max_id):
     t_recall = 0
     t_f1 = 0
     for i in range(id_filter, max_id):
-        precision, recall, f1, support_num = binary_f1_score(y_true == i, y_pred == i, i, label_list, log_or_not)
+        precision, recall, f1, support_num = binary_f1_score(y_true == i, y_pred == i, i, label_list, logger, log_or_not)
         t_precision += precision
         t_recall += recall
         t_f1 += f1
@@ -91,7 +92,7 @@ def f1_score(y_true, y_pred, label_list, log_or_not, id_filter, max_id):
     return t_precision/total_num, t_recall/total_num, t_f1/total_num
 
 
-def binary_f1_score(y_true, y_pred, i, label_list, log_or_not):
+def binary_f1_score(y_true, y_pred, i, label_list, logger, log_or_not):
     """
 
     Args:
@@ -99,6 +100,7 @@ def binary_f1_score(y_true, y_pred, i, label_list, log_or_not):
         y_pred:
         i:
         label_list:
+        logger:
         log_or_not:
 
     Returns:
@@ -113,7 +115,6 @@ def binary_f1_score(y_true, y_pred, i, label_list, log_or_not):
     print("For label %s, precision is %.6f, recall is %.6f, f1 score is %.6f, support num is %d" % (label_list[i],
           precision, recall, f1, num_gold))
     if log_or_not:
-        logger = logging.getLogger("log")
         logger.info("For label %s, precision is %.6f, recall is %.6f, f1 score is %.6f, support num is %d" % (label_list[i],
                     precision, recall, f1, num_gold))
     return precision*num_gold, recall*num_gold, f1*num_gold, num_gold

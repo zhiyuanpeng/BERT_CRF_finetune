@@ -33,6 +33,7 @@ def train_end2end(config):
     c2v = config.c2v
     w2v = config.w2v
     label_list = config.label_list
+    logger = config.logger
     #
     if c2v and not exists(c2v):
         gen_vocab_from_data([train_url, dev_url, test_url])
@@ -83,7 +84,7 @@ def train_end2end(config):
 
         cnt += 1
         # evaluating model use development dataset or and additional test dataset
-        f1 = evaluate(model, dev_url, label_list, bert_model_name, dataset_name, False)
+        f1 = evaluate(model, dev_url, label_list, bert_model_name, dataset_name, logger, False)
         if f1 > max_f1:
             max_f1, max_f1_epoch = f1, epoch
             if save_only_best and best_model_url:
@@ -102,8 +103,10 @@ def train_end2end(config):
     if test_url:
         best_model = torch.load(best_model_url)
         print("best model url:", best_model_url)
+        logger.info("best model url: %s", best_model_url)
         print("evaluating on test dataset:", test_url)
-        evaluate(best_model, test_url, label_list, bert_model_name, dataset_name, True)
+        logger.info("evaluating on test dataset: %s", test_url)
+        evaluate(best_model, test_url, label_list, bert_model_name, dataset_name, logger, True)
 
 
 def main():
