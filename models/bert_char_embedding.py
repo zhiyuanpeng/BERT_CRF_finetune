@@ -10,10 +10,8 @@ class BertCharEmbedding(nn.Module):
     embedding layer consists of bert + char-lstm
     """
 
-    def __init__(self, labels_num, lstm_hidden_dim, char_dim=50, lstm_layers=1, bert_model='bert-base-uncased'):
+    def __init__(self, labels_num, lstm_hidden_dim, char_dim, lstm_layers, bert_model, device):
         super().__init__()
-        # bert embedding layer
-        self.bert = ppb.BertModel.from_pretrained(bert_model)
         # bert output 768 for each word
         self.bert_dim = 768
         # output dim of self.char_repr
@@ -39,7 +37,7 @@ class BertCharEmbedding(nn.Module):
         )
         # bert embedding layer
         self.bert = ppb.BertModel.from_pretrained(bert_model)
-        self.device = get_device('cuda')
+        self.device = device
         # convert to the dim=# of labels
         self.ht_labeler = nn.Sequential(
             nn.ReLU(),

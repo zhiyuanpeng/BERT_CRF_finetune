@@ -8,14 +8,14 @@ from models.bert_char_embedding import BertCharEmbedding
 
 
 class CallNoteNER(nn.Module):
-    def __init__(self, labels_num, lstm_hidden_dim, char_dim=50, lstm_layers=1, bert_model='bert-base-uncased'):
+    def __init__(self, labels_num, lstm_hidden_dim, device, bert_model, char_dim=50, lstm_layers=1):
         super().__init__()
 
-        self.embedding = BertCharEmbedding(labels_num, lstm_hidden_dim, char_dim=char_dim,
-                                           lstm_layers=lstm_layers, bert_model=bert_model)
+        self.embedding = BertCharEmbedding(labels_num, lstm_hidden_dim, char_dim, lstm_layers, bert_model, device)
         # define the CRF model
         self.crf = CRF(labels_num, batch_first=True)
         self.softmax = nn.Softmax(dim=1)
+        self.device = device
 
     def forward(self, sentences, sentence_lengths, sentence_words, sentence_words_lengths,
                 sentence_words_indices, masks, sentences_list, train=True):
@@ -37,7 +37,8 @@ class CallNoteNER(nn.Module):
         :param train:
         :return:
         """
-        sentence_outputs = self.embedding(sentences, sentence_lengths, sentence_words, sentence_words_lengths, sentence_words_indices, masks)
+        sentence_outputs = self.embedding(sentences, sentence_lengths, sentence_words, sentence_words_lengths,
+                                          sentence_words_indices, masks)
         # shape of sentence_outputs: (batch_size, n_classes, lengths[0])
         if train:
             return sentence_outputs
@@ -47,7 +48,8 @@ class CallNoteNER(nn.Module):
                 if sentence_lengths[sent_index] < sentence_lengths[0]:
                     crf_mask[sent_index, sentence_lengths[sent_index]:] = False
             crf_mask = torch.from_numpy(crf_mask)
-            sentence_labels = self.crf.decode(sentence_outputs.permute(0, 2, 1), mask=crf_mask.to(get_device('cuda')))
+            sentence_labels = self.crf.decode(sentence_outputs.permute(0, 2, 1),
+                                              mask=crf_mask.to(self.device))
             return sentence_labels
 
 

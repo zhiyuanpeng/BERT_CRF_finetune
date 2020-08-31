@@ -13,3 +13,10 @@ add mask to mask padding
 remove the zero_grad to fine tune the bert
 train on CoNLL2003
 modify eval.py to output sentence, true label, predict label
+
+4)8/30/2020
+add config file
+add logging model, write the parameters and results into file for each experiment
+modify the f1_score function in torch_util.py
+add a variable to use fine tune or not
+
